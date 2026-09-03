@@ -3,97 +3,95 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Abdulaziz Rashudi</title>
-<style>
-  :root {
-    color-scheme: light dark;
-    --bg: #0f1115;
-    --card: #161a22;
-    --text: #f2f3f5;
-    --muted: #9aa3b2;
-    --accent: #6ea8fe;
-  }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: radial-gradient(circle at 50% 0%, #1b2130, var(--bg));
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Tahoma, Arial, sans-serif;
-    color: var(--text);
-    padding: 24px;
-  }
-  .card {
-    max-width: 480px;
-    width: 100%;
-    background: var(--card);
-    border: 1px solid #262b36;
-    border-radius: 20px;
-    padding: 40px 32px;
-    text-align: center;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.35);
-  }
-  .avatar {
-    width: 88px;
-    height: 88px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--accent), #a78bfa);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 32px;
-    font-weight: 700;
-    margin: 0 auto 20px;
-    color: #0f1115;
-  }
-  h1 {
-    margin: 0 0 8px;
-    font-size: 26px;
-  }
-  p.bio {
-    color: var(--muted);
-    line-height: 1.7;
-    margin: 0 0 28px;
-    font-size: 15px;
-  }
-  .links {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-  .links a {
-    display: block;
-    padding: 12px 16px;
-    border-radius: 12px;
-    background: #1d2330;
-    color: var(--text);
-    text-decoration: none;
-    font-size: 15px;
-    border: 1px solid #2a3140;
-    transition: border-color .15s ease, transform .15s ease;
-  }
-  .links a:hover {
-    border-color: var(--accent);
-    transform: translateY(-1px);
-  }
-  footer {
-    margin-top: 28px;
-    font-size: 12px;
-    color: #5b6474;
-  }
-</style>
+<title>عقاري — منصة عرض العقارات</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="card">
-    <div class="avatar">AR</div>
-    <h1>Abdulaziz Rashudi</h1>
-    <p class="bio">مرحباً بك في صفحتي التعريفية. هذي الصفحة بدايتها بسيطة وراح تتحدث قريباً بمزيد من التفاصيل.</p>
-    <div class="links">
-      <a href="mailto:abdulazizrashudi@gmail.com">📧 abdulazizrashudi@gmail.com</a>
-    </div>
-    <footer>abdulazizrashudi-blip.github.io</footer>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a href="index.html" class="brand">
+      <span class="logo-badge">🏠</span>
+      عقاري
+    </a>
+    <nav class="main-nav">
+      <a href="index.html" class="active">الرئيسية</a>
+      <a href="dashboard.html">لوحة التحكم</a>
+      <a href="owners.html">ملاك العقارات</a>
+    </nav>
   </div>
+</header>
+
+<section class="hero">
+  <div class="hero-inner">
+    <h1>لقيت عقارك بسهولة</h1>
+    <p>تصفّح شقق، فلل، أراضي ومحلات تجارية للبيع والإيجار في مختلف المدن — عروض مباشرة من الملاك.</p>
+
+    <div class="search-bar">
+      <div class="field">
+        <label>المدينة</label>
+        <select id="f-city"></select>
+      </div>
+      <div class="field">
+        <label>نوع العقار</label>
+        <select id="f-type"></select>
+      </div>
+      <div class="field">
+        <label>الحالة</label>
+        <select id="f-status">
+          <option value="">الكل</option>
+          <option value="sale">للبيع</option>
+          <option value="rent">للإيجار</option>
+        </select>
+      </div>
+      <div class="field actions">
+        <button class="btn btn-primary btn-block" id="f-apply">بحث</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<main class="section">
+  <div class="section-head">
+    <h2>العقارات المتاحة</h2>
+    <span class="count" id="results-count"></span>
+  </div>
+  <div class="grid" id="properties-grid"></div>
+</main>
+
+<footer class="site-footer">
+  <div><strong>عقاري</strong> — منصة تجريبية لعرض العقارات</div>
+  <div>هذا موقع عرض (Demo) والبيانات تُحفظ محليًا في متصفحك فقط</div>
+</footer>
+
+<script src="app.js"></script>
+<script>
+  const cityFilter = document.getElementById('f-city');
+  const typeFilter = document.getElementById('f-type');
+  const statusFilter = document.getElementById('f-status');
+  const grid = document.getElementById('properties-grid');
+  const resultsCount = document.getElementById('results-count');
+
+  fillOptions(cityFilter, CITIES, 'كل المدن');
+  fillOptions(typeFilter, PROPERTY_TYPES, 'كل الأنواع');
+
+  function applyFilters() {
+    const city = cityFilter.value;
+    const type = typeFilter.value;
+    const status = statusFilter.value;
+    const list = getProperties().filter(p =>
+      (!city || p.city === city) &&
+      (!type || p.type === type) &&
+      (!status || p.status === status)
+    );
+    renderProperties(grid, list);
+    resultsCount.textContent = `${list.length} عقار`;
+  }
+
+  document.getElementById('f-apply').addEventListener('click', applyFilters);
+  [cityFilter, typeFilter, statusFilter].forEach(el => el.addEventListener('change', applyFilters));
+
+  applyFilters();
+</script>
 </body>
 </html>
