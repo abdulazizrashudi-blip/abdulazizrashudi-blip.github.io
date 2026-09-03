@@ -56,16 +56,20 @@
     <h2>العقارات المتاحة</h2>
     <span class="count" id="results-count"></span>
   </div>
-  <div class="grid" id="properties-grid"></div>
+  <div class="grid" id="properties-grid">
+    <div class="loading-state">⏳ جاري تحميل العقارات...</div>
+  </div>
 </main>
 
 <footer class="site-footer">
-  <div><strong>عقاري</strong> — منصة تجريبية لعرض العقارات</div>
-  <div>هذا موقع عرض (Demo) والبيانات تُحفظ محليًا في متصفحك فقط</div>
+  <div><strong>عقاري</strong> — منصة عقارية</div>
+  <div>البيانات محفوظة على قاعدة بيانات حقيقية (Firebase)</div>
 </footer>
 
 <script src="app.js"></script>
-<script>
+<script type="module">
+  import { getProperties, getOwners } from './firebase.js';
+
   const cityFilter = document.getElementById('f-city');
   const typeFilter = document.getElementById('f-type');
   const statusFilter = document.getElementById('f-status');
@@ -75,23 +79,39 @@
   fillOptions(cityFilter, CITIES, 'كل المدن');
   fillOptions(typeFilter, PROPERTY_TYPES, 'كل الأنواع');
 
+  let allProperties = [];
+  let ownerMap = {};
+
   function applyFilters() {
     const city = cityFilter.value;
     const type = typeFilter.value;
     const status = statusFilter.value;
-    const list = getProperties().filter(p =>
+    const list = allProperties.filter(p =>
       (!city || p.city === city) &&
       (!type || p.type === type) &&
       (!status || p.status === status)
     );
-    renderProperties(grid, list);
+    renderProperties(grid, list, ownerMap);
     resultsCount.textContent = `${list.length} عقار`;
   }
 
   document.getElementById('f-apply').addEventListener('click', applyFilters);
   [cityFilter, typeFilter, statusFilter].forEach(el => el.addEventListener('change', applyFilters));
 
-  applyFilters();
+  async function init() {
+    try {
+      const [props, owners] = await Promise.all([getProperties(), getOwners()]);
+      allProperties = props;
+      ownerMap = {};
+      owners.forEach(o => { ownerMap[o.id] = o.name; });
+      applyFilters();
+    } catch (err) {
+      grid.innerHTML = `<div class="empty-state"><div class="ic">⚠️</div><div>تعذّر تحميل العقارات، حاول تحديث الصفحة</div></div>`;
+      console.error(err);
+    }
+  }
+
+  init();
 </script>
 </body>
 </html>
