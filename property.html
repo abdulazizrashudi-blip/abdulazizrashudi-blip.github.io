@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تفاصيل العقار — عقاري</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a href="https://abdulazizrashudi-blip.github.io/" class="brand">
+      <span class="logo-badge">🏠</span>
+      عقاري
+    </a>
+    <nav class="main-nav">
+      <a href="https://abdulazizrashudi-blip.github.io/" class="active">الرئيسية</a>
+      <a href="https://abdulazizrashudi-blip.github.io/map.html">الخريطة</a>
+      <a href="https://abdulazizrashudi-blip.github.io/leads.html">اعرض/اطلب عقار</a>
+      <a href="https://abdulazizrashudi-blip.github.io/aqari-dashboard/">لوحة التحكم</a>
+      <a href="https://abdulazizrashudi-blip.github.io/aqari-owners/">ملاك العقارات</a>
+    </nav>
+  </div>
+</header>
+
+<div class="detail-wrap" id="detail-wrap">
+  <div class="loading-state">⏳ جاري تحميل بيانات العقار...</div>
+</div>
+
+<footer class="site-footer">
+  <div><strong>عقاري</strong> — منصة عقارية</div>
+  <div>البيانات محفوظة على قاعدة بيانات حقيقية (Firebase)</div>
+</footer>
+
+<script src="app.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script type="module">
+  import { getProperty, getProperties, getOwner } from './firebase.js';
+
+  const wrap = document.getElementById('detail-wrap');
+  const params = new URLSearchParams(location.search);
+  const id = params.get('id');
+
+  function notFound() {
+    wrap.innerHTML = `
+      <div class="empty-state">
+        <div class="ic">⚠️</div>
+        <div>هذا العقار غير موجود أو تم حذفه</div>
+      </div>`;
+  }
+
+  async function init() {
+    if (!id) { notFound(); return; }
+    let p;
+    try {
+      p = await getProperty(id);
+    } catch (err) {
+      console.error(err);
+      notFound();
+      return;
+    }
+    if (!p) { notFound(); return; }
+
+    const [owner, allProps] = await Promise.all([
+      p.ownerId ? getOwner(p.ownerId).catch(() => null) : null,
+      getProperties().catch(() => []),
+    ]);
+
+    document.title = p.title + ' — عقاري';
+
+    const statusLabel = p.status === 'rent' ? 'للإيجار' : 'للبيع';
+    const periodLabel = p.status === 'rent' && p.rentPeriod ? (RENT_PERIODS[p.rentPeriod] || '') : '';
+    const priceUnit = p.status === 'rent' ? (periodLabel ? `ريال / ${periodLabel}` : 'ريال') : 'ريال';
+    const icon = TYPE_ICON[p.type] || '🏠';
+    const wa = owner && owner.phone ? whatsappLink(owner.phone, `مهتم بعقار: ${p.title} (${refCode(p)})`) : '';
+    const tel = owner && owner.phone ? `tel:${owner.phone.replace(/[^0-9+]/g, '')}` : '';
+    const hasMap = typeof p.lat === 'number' && typeof p.lng === 'number';
+
+    wrap.innerHTML = `
+      <div class="detail-crumbs">
+        <a href="https://abdulazizrashudi-blip.github.io/">الرئيسية</a> / ${p.title}
+      </div>
+      <div class="detail-grid">
+        <div class="detail-media">
+          ${p.imageUrl
+            ? `<img src="${p.imageUrl}" alt="${p.title}">`
+            : `<div class="p-thumb" style="background:${thumbStyle(0)}"><span>${icon}</span></div>`}
+        </div>
+        <div class="detail-card">
+          <span class="tag ${p.status === 'rent' ? 'rent' : 'sale'}" style="font-size:13px; padding:6px 14px; margin-bottom:10px; display:inline-block;">${statusLabel}</span>
+          <div class="detail-title">${p.title}</div>
+          <div class="detail-loc">📍 ${p.city}${p.neighborhood ? ' · ' + p.neighborhood : ''}</div>
+          <div class="detail-price">${formatPrice(p.price)} <small>${priceUnit}</small></div>
+          <div class="detail-meta-row">
+            <span>🏷️ ${p.type}</span>
+            <span>📐 ${p.area} م²</span>
+            ${p.rooms ? `<span>🛏️ ${p.rooms} غرف</span>` : ''}
+            <span>${refCode(p)}</span>
+          </div>
+          ${p.description ? `<div class="detail-desc">${p.description}</div>` : ''}
+          <div class="detail-actions">
+            ${wa ? `<a class="btn btn-wa" href="${wa}" target="_blank" rel="noopener">💬 تواصل عبر واتساب</a>` : ''}
+            ${tel ? `<a class="btn btn-primary" href="${tel}">📞 اتصل الآن</a>` : ''}
+            <button type="button" class="btn btn-outline" onclick="shareProperty('${p.id}', '${(p.title || '').replace(/'/g, "\\'")}')">↗️ مشاركة</button>
+          </div>
+          ${owner ? `<div class="detail-owner">👤 <span>${owner.name}</span></div>` : ''}
+          ${hasMap ? `<div id="leaflet-box" class="leaflet-box"></div>` : ''}
+        </div>
+      </div>
+      <div class="detail-similar">
+        <div class="section-head"><h2>عقارات مشابهة</h2></div>
+        <div class="grid" id="similar-grid"></div>
+      </div>`;
+
+    if (hasMap) {
+      const map = L.map('leaflet-box', { zoomControl: true }).setView([p.lat, p.lng], 14);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap',
+        maxZoom: 19,
+      }).addTo(map);
+      L.marker([p.lat, p.lng]).addTo(map);
+    }
+
+    const ownerMap = {};
+    if (owner) ownerMap[owner.id] = owner;
+    // نحمّل بيانات باقي الملاك المطلوبين للعقارات المشابهة (بحد أقل من الطلبات)
+    const similarGrid = document.getElementById('similar-grid');
+    const similarList = allProps.filter(x => x.id !== p.id && (x.city === p.city || x.type === p.type)).slice(0, 3);
+    const neededOwnerIds = Array.from(new Set(similarList.map(x => x.ownerId).filter(oid => oid && !ownerMap[oid])));
+    const fetchedOwners = await Promise.all(neededOwnerIds.map(oid => getOwner(oid).catch(() => null)));
+    fetchedOwners.forEach(o => { if (o) ownerMap[o.id] = o; });
+    renderSimilarProperties(similarGrid, allProps, p, ownerMap);
+  }
+
+  init();
+</script>
+</body>
+</html>
