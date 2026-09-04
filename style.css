@@ -3,15 +3,15 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --navy: #12233f;
-  --navy-2: #1b3358;
-  --gold: #c8a05d;
-  --gold-light: #e6c98a;
-  --bg: #f5f6f8;
+  --navy: #0c4a6e;
+  --navy-2: #0369a1;
+  --gold: #38bdf8;
+  --gold-light: #7dd3fc;
+  --bg: #f4f9fc;
   --card: #ffffff;
   --text: #1c2530;
-  --muted: #6b7686;
-  --border: #e6e8ec;
+  --muted: #5f7a8c;
+  --border: #dcebf3;
   --radius: 14px;
 }
 
@@ -81,7 +81,7 @@ button { font-family: inherit; cursor: pointer; }
 /* ---------- Hero ---------- */
 .hero {
   background:
-    linear-gradient(120deg, rgba(18,35,63,.92), rgba(27,51,88,.88)),
+    linear-gradient(120deg, rgba(12,74,110,.92), rgba(3,105,161,.88)),
     repeating-linear-gradient(45deg, rgba(255,255,255,.03) 0 2px, transparent 2px 40px);
   color: #fff;
   padding: 56px 24px 40px;
@@ -139,7 +139,17 @@ button { font-family: inherit; cursor: pointer; }
   flex-wrap: wrap;
   gap: 10px;
 }
-.section-head h2 { font-size: 21px; font-weight: 800; }
+.section-head h2 { font-size: 21px; font-weight: 800; position: relative; padding-bottom: 10px; }
+.section-head h2::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  inset-inline-start: 0;
+  width: 46px;
+  height: 3px;
+  border-radius: 3px;
+  background: var(--gold);
+}
 .section-head .count { color: var(--muted); font-size: 14px; }
 
 /* ---------- Property grid / cards ---------- */
@@ -155,7 +165,7 @@ button { font-family: inherit; cursor: pointer; }
   border: 1px solid var(--border);
   transition: box-shadow .18s ease, transform .18s ease;
 }
-.p-card:hover { box-shadow: 0 14px 30px rgba(18,35,63,0.12); transform: translateY(-2px); }
+.p-card:hover { box-shadow: 0 14px 30px rgba(12,74,110,0.14); transform: translateY(-2px); }
 .p-thumb {
   height: 150px;
   display: flex;
@@ -460,7 +470,7 @@ tbody tr:hover { background: #fafbfc; }
 .leaflet-popup-card { font-family: 'Cairo', sans-serif; text-align: right; }
 .leaflet-popup-card .lp-title { font-weight: 700; font-size: 13.5px; margin-bottom: 4px; }
 .leaflet-popup-card .lp-price { color: var(--navy-2); font-weight: 800; font-size: 13px; margin-bottom: 6px; }
-.leaflet-popup-card a { color: #1b3358; font-weight: 700; font-size: 12.5px; text-decoration: underline; }
+.leaflet-popup-card a { color: #0369a1; font-weight: 700; font-size: 12.5px; text-decoration: underline; }
 
 /* ---------- Tabs (leads.html) ---------- */
 .tabs { display: flex; gap: 8px; margin-bottom: 22px; border-bottom: 1px solid var(--border); }
