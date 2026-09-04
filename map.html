@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>خريطة العقارات — عقاري</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a href="https://abdulazizrashudi-blip.github.io/" class="brand">
+      <span class="logo-badge">🏠</span>
+      عقاري
+    </a>
+    <nav class="main-nav">
+      <a href="https://abdulazizrashudi-blip.github.io/">الرئيسية</a>
+      <a href="https://abdulazizrashudi-blip.github.io/map.html" class="active">الخريطة</a>
+      <a href="https://abdulazizrashudi-blip.github.io/leads.html">اعرض/اطلب عقار</a>
+      <a href="https://abdulazizrashudi-blip.github.io/aqari-dashboard/">لوحة التحكم</a>
+      <a href="https://abdulazizrashudi-blip.github.io/aqari-owners/">ملاك العقارات</a>
+    </nav>
+  </div>
+</header>
+
+<div class="map-page-wrap">
+  <div class="section-head">
+    <h2>خريطة العقارات</h2>
+  </div>
+  <div class="map-counts" id="map-counts"></div>
+  <div id="leaflet-full" class="leaflet-full"></div>
+  <p style="color:var(--muted); font-size:12.5px; margin-top:12px;">
+    تظهر على الخريطة العقارات اللي تم تحديد موقعها فقط. العقارات بدون إحداثيات ما تظهر هنا لكنها موجودة بالصفحة الرئيسية.
+  </p>
+</div>
+
+<footer class="site-footer">
+  <div><strong>عقاري</strong> — منصة عقارية</div>
+  <div>البيانات محفوظة على قاعدة بيانات حقيقية (Firebase)</div>
+</footer>
+
+<script src="app.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script type="module">
+  import { getProperties } from './firebase.js';
+
+  const countsEl = document.getElementById('map-counts');
+
+  async function init() {
+    let all = [];
+    try {
+      all = await getProperties();
+    } catch (err) {
+      console.error(err);
+    }
+
+    const forSale = all.filter(p => p.status === 'sale').length;
+    const forRent = all.filter(p => p.status === 'rent').length;
+    countsEl.innerHTML = `
+      <span>الكل ${all.length}</span>
+      <span>للبيع ${forSale}</span>
+      <span>للإيجار ${forRent}</span>`;
+
+    const withLocation = all.filter(p => typeof p.lat === 'number' && typeof p.lng === 'number');
+
+    const map = L.map('leaflet-full').setView([24.7136, 46.6753], 6); // مركز افتراضي: السعودية
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap',
+      maxZoom: 19,
+    }).addTo(map);
+
+    if (!withLocation.length) return;
+
+    const markers = [];
+    withLocation.forEach(p => {
+      const marker = L.marker([p.lat, p.lng]).addTo(map);
+      const statusLabel = p.status === 'rent' ? 'للإيجار' : 'للبيع';
+      marker.bindPopup(`
+        <div class="leaflet-popup-card">
+          <div class="lp-title">${p.title}</div>
+          <div class="lp-price">${formatPrice(p.price)} ريال · ${statusLabel}</div>
+          <a href="${propertyUrl(p.id)}">عرض التفاصيل ←</a>
+        </div>`);
+      markers.push(marker);
+    });
+
+    if (markers.length > 1) {
+      const group = L.featureGroup(markers);
+      map.fitBounds(group.getBounds().pad(0.2));
+    }
+  }
+
+  init();
+</script>
+</body>
+</html>
