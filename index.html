@@ -16,6 +16,8 @@
     </a>
     <nav class="main-nav">
       <a href="https://abdulazizrashudi-blip.github.io/" class="active">الرئيسية</a>
+      <a href="https://abdulazizrashudi-blip.github.io/map.html">الخريطة</a>
+      <a href="https://abdulazizrashudi-blip.github.io/leads.html">اعرض/اطلب عقار</a>
       <a href="https://abdulazizrashudi-blip.github.io/aqari-dashboard/">لوحة التحكم</a>
       <a href="https://abdulazizrashudi-blip.github.io/aqari-owners/">ملاك العقارات</a>
     </nav>
@@ -33,6 +35,10 @@
         <select id="f-city"></select>
       </div>
       <div class="field">
+        <label>الحي</label>
+        <select id="f-neighborhood"></select>
+      </div>
+      <div class="field">
         <label>نوع العقار</label>
         <select id="f-type"></select>
       </div>
@@ -44,6 +50,14 @@
           <option value="rent">للإيجار</option>
         </select>
       </div>
+      <div class="field">
+        <label>مدة الإيجار</label>
+        <select id="f-period">
+          <option value="">الكل</option>
+          <option value="monthly">شهري</option>
+          <option value="yearly">سنوي</option>
+        </select>
+      </div>
       <div class="field actions">
         <button class="btn btn-primary btn-block" id="f-apply">بحث</button>
       </div>
@@ -52,6 +66,8 @@
 </section>
 
 <main class="section">
+  <div class="trust-stats" id="trust-stats"></div>
+
   <div class="section-head">
     <h2>العقارات المتاحة</h2>
     <span class="count" id="results-count"></span>
@@ -68,13 +84,16 @@
 
 <script src="app.js"></script>
 <script type="module">
-  import { getProperties, getOwners } from './firebase.js';
+  import { getProperties, getOwners, getStats } from './firebase.js';
 
   const cityFilter = document.getElementById('f-city');
+  const neighborhoodFilter = document.getElementById('f-neighborhood');
   const typeFilter = document.getElementById('f-type');
   const statusFilter = document.getElementById('f-status');
+  const periodFilter = document.getElementById('f-period');
   const grid = document.getElementById('properties-grid');
   const resultsCount = document.getElementById('results-count');
+  const statsEl = document.getElementById('trust-stats');
 
   fillOptions(cityFilter, CITIES, 'كل المدن');
   fillOptions(typeFilter, PROPERTY_TYPES, 'كل الأنواع');
@@ -84,26 +103,32 @@
 
   function applyFilters() {
     const city = cityFilter.value;
+    const neighborhood = neighborhoodFilter.value;
     const type = typeFilter.value;
     const status = statusFilter.value;
+    const period = periodFilter.value;
     const list = allProperties.filter(p =>
       (!city || p.city === city) &&
+      (!neighborhood || p.neighborhood === neighborhood) &&
       (!type || p.type === type) &&
-      (!status || p.status === status)
+      (!status || p.status === status) &&
+      (!period || (p.status === 'rent' && p.rentPeriod === period))
     );
     renderProperties(grid, list, ownerMap);
     resultsCount.textContent = `${list.length} عقار`;
   }
 
   document.getElementById('f-apply').addEventListener('click', applyFilters);
-  [cityFilter, typeFilter, statusFilter].forEach(el => el.addEventListener('change', applyFilters));
+  [cityFilter, neighborhoodFilter, typeFilter, statusFilter, periodFilter].forEach(el => el.addEventListener('change', applyFilters));
 
   async function init() {
     try {
-      const [props, owners] = await Promise.all([getProperties(), getOwners()]);
+      const [props, owners, stats] = await Promise.all([getProperties(), getOwners(), getStats()]);
       allProperties = props;
       ownerMap = {};
-      owners.forEach(o => { ownerMap[o.id] = o.name; });
+      owners.forEach(o => { ownerMap[o.id] = o; });
+      fillNeighborhoodOptions(neighborhoodFilter, allProperties);
+      renderStats(statsEl, stats);
       applyFilters();
     } catch (err) {
       grid.innerHTML = `<div class="empty-state"><div class="ic">⚠️</div><div>تعذّر تحميل العقارات، حاول تحديث الصفحة</div></div>`;
