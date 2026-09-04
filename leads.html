@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>اعرض عقارك أو سجّل طلبك — عقاري</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a href="https://abdulazizrashudi-blip.github.io/" class="brand">
+      <span class="logo-badge">🏠</span>
+      عقاري
+    </a>
+    <nav class="main-nav">
+      <a href="https://abdulazizrashudi-blip.github.io/">الرئيسية</a>
+      <a href="https://abdulazizrashudi-blip.github.io/map.html">الخريطة</a>
+      <a href="https://abdulazizrashudi-blip.github.io/leads.html" class="active">اعرض/اطلب عقار</a>
+      <a href="https://abdulazizrashudi-blip.github.io/aqari-dashboard/">لوحة التحكم</a>
+      <a href="https://abdulazizrashudi-blip.github.io/aqari-owners/">ملاك العقارات</a>
+    </nav>
+  </div>
+</header>
+
+<main class="section" style="max-width:720px;">
+  <div class="section-head">
+    <h2>خطوتك العقارية تبدأ هنا</h2>
+  </div>
+
+  <div class="tabs">
+    <button type="button" class="tab-btn active" id="tab-offer-btn">اعرض عقارك</button>
+    <button type="button" class="tab-btn" id="tab-request-btn">سجّل طلبك العقاري</button>
+  </div>
+
+  <!-- اعرض عقارك -->
+  <div class="tab-panel" id="tab-offer">
+    <div class="panel">
+      <p style="color:var(--muted); font-size:13.5px; margin-bottom:18px;">
+        عندك عقار تبي تسوّقه؟ عبّي بياناته وفريقنا يتواصل معك لإدراجه في الموقع.
+      </p>
+      <div id="offer-alert"></div>
+      <form id="offer-form">
+        <div class="form-grid">
+          <div class="field full">
+            <label>اسمك</label>
+            <input type="text" id="of-name" required placeholder="مثال: سعود المطيري">
+          </div>
+          <div class="field">
+            <label>رقم الجوال</label>
+            <input type="text" id="of-phone" required placeholder="9665xxxxxxxx+">
+          </div>
+          <div class="field">
+            <label>المدينة</label>
+            <select id="of-city" required></select>
+          </div>
+          <div class="field">
+            <label>نوع العقار</label>
+            <select id="of-type" required></select>
+          </div>
+          <div class="field">
+            <label>الغرض</label>
+            <select id="of-status" required>
+              <option value="sale">بيع</option>
+              <option value="rent">إيجار</option>
+            </select>
+          </div>
+          <div class="field full">
+            <label>وصف مختصر للعقار</label>
+            <input type="text" id="of-notes" placeholder="مثال: شقة 3 غرف بحي النرجس، السعر التقريبي 25000">
+          </div>
+        </div>
+        <div style="margin-top:16px;">
+          <button type="submit" class="btn btn-primary" id="offer-submit-btn">إرسال بيانات العقار</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- سجل طلبك العقاري -->
+  <div class="tab-panel hidden" id="tab-request">
+    <div class="panel">
+      <p style="color:var(--muted); font-size:13.5px; margin-bottom:18px;">
+        ما لقيت العقار المناسب؟ سجّل وش تدور عليه وبنرجع لك أول ما يتوفر شي مناسب.
+      </p>
+      <div id="request-alert"></div>
+      <form id="request-form">
+        <div class="form-grid">
+          <div class="field full">
+            <label>اسمك</label>
+            <input type="text" id="rq-name" required placeholder="مثال: سعود المطيري">
+          </div>
+          <div class="field">
+            <label>رقم الجوال</label>
+            <input type="text" id="rq-phone" required placeholder="9665xxxxxxxx+">
+          </div>
+          <div class="field">
+            <label>المدينة</label>
+            <select id="rq-city" required></select>
+          </div>
+          <div class="field">
+            <label>نوع العقار</label>
+            <select id="rq-type" required></select>
+          </div>
+          <div class="field">
+            <label>الغرض</label>
+            <select id="rq-status" required>
+              <option value="sale">شراء</option>
+              <option value="rent">إيجار</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>الميزانية التقريبية (ريال)</label>
+            <input type="number" id="rq-budget" min="0" placeholder="0">
+          </div>
+          <div class="field full">
+            <label>ملاحظات إضافية</label>
+            <input type="text" id="rq-notes" placeholder="مثال: أبي شقة 3 غرف قريبة من المدارس">
+          </div>
+        </div>
+        <div style="margin-top:16px;">
+          <button type="submit" class="btn btn-primary" id="request-submit-btn">إرسال الطلب</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div><strong>عقاري</strong> — منصة عقارية</div>
+  <div>البيانات محفوظة على قاعدة بيانات حقيقية (Firebase)</div>
+</footer>
+
+<script src="app.js"></script>
+<script type="module">
+  import { submitPropertyOffer, submitPropertyRequest } from './firebase.js';
+
+  const tabOfferBtn = document.getElementById('tab-offer-btn');
+  const tabRequestBtn = document.getElementById('tab-request-btn');
+  const tabOffer = document.getElementById('tab-offer');
+  const tabRequest = document.getElementById('tab-request');
+
+  tabOfferBtn.addEventListener('click', () => {
+    tabOfferBtn.classList.add('active');
+    tabRequestBtn.classList.remove('active');
+    tabOffer.classList.remove('hidden');
+    tabRequest.classList.add('hidden');
+  });
+  tabRequestBtn.addEventListener('click', () => {
+    tabRequestBtn.classList.add('active');
+    tabOfferBtn.classList.remove('active');
+    tabRequest.classList.remove('hidden');
+    tabOffer.classList.add('hidden');
+  });
+
+  fillOptions(document.getElementById('of-city'), CITIES, 'اختر المدينة');
+  fillOptions(document.getElementById('of-type'), PROPERTY_TYPES, 'اختر النوع');
+  fillOptions(document.getElementById('rq-city'), CITIES, 'اختر المدينة');
+  fillOptions(document.getElementById('rq-type'), PROPERTY_TYPES, 'اختر النوع');
+
+  function showAlert(el, message, type) {
+    el.innerHTML = `<div class="alert ${type}">${type === 'error' ? '⚠️' : '✅'} <div>${message}</div></div>`;
+  }
+
+  const offerForm = document.getElementById('offer-form');
+  const offerAlert = document.getElementById('offer-alert');
+  const offerBtn = document.getElementById('offer-submit-btn');
+
+  offerForm.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    offerAlert.innerHTML = '';
+    const data = {
+      name: document.getElementById('of-name').value.trim(),
+      phone: document.getElementById('of-phone').value.trim(),
+      city: document.getElementById('of-city').value,
+      type: document.getElementById('of-type').value,
+      status: document.getElementById('of-status').value,
+      notes: document.getElementById('of-notes').value.trim(),
+    };
+    if (!data.name || !data.phone || !data.city || !data.type) return;
+
+    offerBtn.disabled = true;
+    offerBtn.textContent = 'جاري الإرسال...';
+    try {
+      await submitPropertyOffer(data);
+      showAlert(offerAlert, 'تم استلام بيانات عقارك، بيتواصل معك فريقنا قريبًا.', 'success');
+      offerForm.reset();
+    } catch (err) {
+      showAlert(offerAlert, 'تعذّر إرسال البيانات، حاول مرة أخرى', 'error');
+      console.error(err);
+    } finally {
+      offerBtn.disabled = false;
+      offerBtn.textContent = 'إرسال بيانات العقار';
+    }
+  });
+
+  const requestForm = document.getElementById('request-form');
+  const requestAlert = document.getElementById('request-alert');
+  const requestBtn = document.getElementById('request-submit-btn');
+
+  requestForm.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    requestAlert.innerHTML = '';
+    const data = {
+      name: document.getElementById('rq-name').value.trim(),
+      phone: document.getElementById('rq-phone').value.trim(),
+      city: document.getElementById('rq-city').value,
+      type: document.getElementById('rq-type').value,
+      status: document.getElementById('rq-status').value,
+      budget: Number(document.getElementById('rq-budget').value || 0),
+      notes: document.getElementById('rq-notes').value.trim(),
+    };
+    if (!data.name || !data.phone || !data.city || !data.type) return;
+
+    requestBtn.disabled = true;
+    requestBtn.textContent = 'جاري الإرسال...';
+    try {
+      await submitPropertyRequest(data);
+      showAlert(requestAlert, 'تم تسجيل طلبك، بنرجع لك أول ما يتوفر عقار مناسب.', 'success');
+      requestForm.reset();
+    } catch (err) {
+      showAlert(requestAlert, 'تعذّر إرسال الطلب، حاول مرة أخرى', 'error');
+      console.error(err);
+    } finally {
+      requestBtn.disabled = false;
+      requestBtn.textContent = 'إرسال الطلب';
+    }
+  });
+</script>
+</body>
+</html>
