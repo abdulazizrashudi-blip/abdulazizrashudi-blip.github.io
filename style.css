@@ -186,7 +186,7 @@ button { font-family: inherit; cursor: pointer; }
   padding: 4px 10px;
   border-radius: 999px;
 }
-.p-thumb .badge.rent { background: #fff4dd; color: #8a6100; }
+.p-thumb .badge.rent { background: #fff4dd; color: #8a6100; } .fav-btn { position: absolute; top: 8px; inset-inline-end: 8px; width: 30px; height: 30px; border-radius: 50%; border: none; background: rgba(255,255,255,0.92); color: #c0392b; font-size: 16px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 2; } .fav-btn.active { background: #c0392b; color: #fff; }
 .p-body { padding: 16px; }
 .p-title { font-weight: 700; font-size: 16px; margin-bottom: 4px; }
 .p-loc { color: var(--muted); font-size: 13px; margin-bottom: 10px; display: flex; align-items: center; gap: 4px; }
