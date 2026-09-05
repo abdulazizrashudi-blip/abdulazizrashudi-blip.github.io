@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الأسئلة الشائعة — عقاري</title>
+<link rel="stylesheet" href="style.css">
+<style>
+.faq-list{display:flex;flex-direction:column;gap:12px;}
+.faq-item{border:1px solid var(--border);border-radius:var(--radius);background:var(--card);padding:16px 18px;}
+.faq-item summary{cursor:pointer;font-weight:700;font-size:15px;list-style:none;display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.faq-item summary::-webkit-details-marker{display:none;}
+.faq-item summary::after{content:'+';font-size:20px;color:var(--muted);transition:transform .15s;}
+.faq-item[open] summary::after{content:'−';}
+.faq-item p{margin-top:12px;color:var(--text);font-size:14px;line-height:1.9;}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a href="https://abdulazizrashudi-blip.github.io/" class="brand">
+      <span class="logo-badge">🏠</span>
+      عقاري
+    </a>
+    <nav class="main-nav">
+      <a href="https://abdulazizrashudi-blip.github.io/">الرئيسية</a>
+      <a href="https://abdulazizrashudi-blip.github.io/map.html">الخريطة</a>
+      <a href="https://abdulazizrashudi-blip.github.io/leads.html">اعرض/اطلب عقار</a>
+      <a href="https://abdulazizrashudi-blip.github.io/aqari-dashboard/">لوحة التحكم</a>
+      <a href="https://abdulazizrashudi-blip.github.io/aqari-owners/">ملاك العقارات</a>
+      <a href="https://abdulazizrashudi-blip.github.io/about.html">من نحن</a>
+      <a href="https://abdulazizrashudi-blip.github.io/faq.html" class="active">الأسئلة الشائعة</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-inner">
+    <h1>الأسئلة الشائعة</h1>
+    <p>إجابات على أكثر الأسئلة اللي توصلنا من زوار المنصة والملاك — إذا ما لقيت سؤالك، تواصل معنا مباشرة.</p>
+  </div>
+</section>
+
+<main class="section">
+  <div class="section-head">
+    <h2>أسئلة يتكرر السؤال عنها</h2>
+  </div>
+  <div class="faq-list">
+    <details class="faq-item" open>
+      <summary>كيف أبحث عن عقار مناسب؟</summary>
+      <p>من الصفحة الرئيسية، استخدم شريط البحث لتحديد المدينة والحي ونوع العقار وحالته (بيع/إيجار)، وبتظهر لك النتائج المطابقة مباشرة. تقدر أيضًا تتصفح العقارات على الخريطة من صفحة "الخريطة".</p>
+    </details>
+    <details class="faq-item">
+      <summary>كيف أتواصل مع مالك العقار؟</summary>
+      <p>كل بطاقة عقار فيها زر "واتساب" يوصلك مباشرة بصاحب العقار مع رسالة جاهزة تذكر مرجع العقار، وفي صفحة تفاصيل العقار تقدر تشوف وسائل تواصل إضافية.</p>
+    </details>
+    <details class="faq-item">
+      <summary>كيف أعرض عقاري للبيع أو الإيجار؟</summary>
+      <p>ادخل صفحة "اعرض/اطلب عقار" واختر "اعرض عقار"، وعبّي بيانات العقار وبيانات التواصل، وبيتم مراجعته وإضافته للمنصة.</p>
+    </details>
+    <details class="faq-item">
+      <summary>أبي عقار معيّن وما لقيته بالموقع، وش أسوي؟</summary>
+      <p>من نفس صفحة "اعرض/اطلب عقار" اختر "اطلب عقار" وحدد مواصفات اللي تبيه (المدينة، النوع، الميزانية)، وبيتم التواصل معك إذا توفر عقار مطابق.</p>
+    </details>
+    <details class="faq-item">
+      <summary>هل استخدام المنصة مجاني؟</summary>
+      <p>نعم، تصفح العقارات والتواصل مع الملاك وعرض وطلب العقارات كله مجاني بدون أي رسوم على الزوار.</p>
+    </details>
+    <details class="faq-item">
+      <summary>هل العقارات المعروضة محدثة باستمرار؟</summary>
+      <p>العقارات مربوطة بقاعدة بيانات حقيقية وتُحدَّث أول بأول من خلال لوحة التحكم، وأحدث العقارات تظهر أول القائمة بالصفحة الرئيسية.</p>
+    </details>
+    <details class="faq-item">
+      <summary>كيف أسجل كمالك عقارات في المنصة؟</summary>
+      <p>تقدر تتواصل معنا عبر وسائل التواصل بأسفل الصفحة وبنسجّلك كمالك حتى تقدر تضيف عقاراتك وتظهر بياناتك مع كل عقار تعرضه.</p>
+    </details>
+    <details class="faq-item">
+      <summary>هل بيانات تواصلي آمنة؟</summary>
+      <p>بيانات التواصل ما تُعرض إلا مع العقارات اللي توافق على عرضها، ونستخدمها فقط لتسهيل التواصل بين الأطراف المهتمة.</p>
+    </details>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div><strong>عقاري</strong> — منصة عقارية</div> <div id="footer-contact" class="footer-contact"></div>
+  <div>البيانات محفوظة على قاعدة بيانات حقيقية (Firebase)</div>
+</footer>
+
+<script type="module"> import { getContactInfo } from './firebase.js'; getContactInfo().then(c => renderFooterContact(document.getElementById('footer-contact'), c)).catch(() => {}); </script>
+<script src="app.js"></script>
+</body>
+</html>

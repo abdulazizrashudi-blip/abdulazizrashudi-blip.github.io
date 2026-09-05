@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>من نحن — عقاري</title>
+<link rel="stylesheet" href="style.css">
+<style>
+.about-text{max-width:800px;margin:0 auto 30px;font-size:15px;line-height:2;color:var(--text);}
+.about-features{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:10px;}
+.about-feature{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;text-align:center;}
+.about-feature .ic{font-size:28px;margin-bottom:10px;}
+.about-feature h3{font-size:15px;font-weight:800;margin-bottom:6px;}
+.about-feature p{font-size:13.5px;color:var(--muted);line-height:1.8;}
+@media (max-width: 860px){ .about-features{grid-template-columns:1fr;} }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a href="https://abdulazizrashudi-blip.github.io/" class="brand">
+      <span class="logo-badge">🏠</span>
+      عقاري
+    </a>
+    <nav class="main-nav">
+      <a href="https://abdulazizrashudi-blip.github.io/">الرئيسية</a>
+      <a href="https://abdulazizrashudi-blip.github.io/map.html">الخريطة</a>
+      <a href="https://abdulazizrashudi-blip.github.io/leads.html">اعرض/اطلب عقار</a>
+      <a href="https://abdulazizrashudi-blip.github.io/aqari-dashboard/">لوحة التحكم</a>
+      <a href="https://abdulazizrashudi-blip.github.io/aqari-owners/">ملاك العقارات</a>
+      <a href="https://abdulazizrashudi-blip.github.io/about.html" class="active">من نحن</a>
+      <a href="https://abdulazizrashudi-blip.github.io/faq.html">الأسئلة الشائعة</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-inner">
+    <h1>من نحن</h1>
+    <p>عقاري منصة تجمع الباحثين عن عقار مع الملاك مباشرة، بدون وسطاء وبمعلومات واضحة وموثوقة.</p>
+  </div>
+</section>
+
+<main class="section">
+  <div class="about-text">
+    <p>
+      "عقاري" منصة إلكترونية تهدف لتسهيل عملية البحث عن العقارات وعرضها في مختلف المدن، من خلال ربط الملاك مباشرة
+      بالباحثين عن شقق وفلل وأراضي ومحلات تجارية للبيع أو الإيجار. نوفّر بيانات محدثة على قاعدة بيانات حقيقية، وطريقة
+      سهلة وسريعة للتواصل بين الطرفين عبر واتساب دون تعقيد.
+    </p>
+  </div>
+
+  <div class="trust-stats" id="trust-stats"></div>
+
+  <div class="section-head">
+    <h2>وش يميّزنا</h2>
+  </div>
+  <div class="about-features">
+    <div class="about-feature">
+      <div class="ic">🔎</div>
+      <h3>بحث دقيق</h3>
+      <p>فلترة حسب المدينة والحي والنوع والحالة والسعر، عشان توصل للعقار المناسب أسرع.</p>
+    </div>
+    <div class="about-feature">
+      <div class="ic">🗺️</div>
+      <h3>تصفح بالخريطة</h3>
+      <p>شوف مواقع العقارات على خريطة تفاعلية قبل ما تتواصل مع المالك.</p>
+    </div>
+    <div class="about-feature">
+      <div class="ic">💬</div>
+      <h3>تواصل مباشر</h3>
+      <p>تواصل مباشر مع المالك عبر واتساب بدون وسطاء أو عمولات مخفية.</p>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div><strong>عقاري</strong> — منصة عقارية</div> <div id="footer-contact" class="footer-contact"></div>
+  <div>البيانات محفوظة على قاعدة بيانات حقيقية (Firebase)</div>
+</footer>
+
+<script src="app.js"></script>
+<script type="module">
+  import { getStats, getContactInfo } from './firebase.js';
+  getContactInfo().then(c => renderFooterContact(document.getElementById('footer-contact'), c)).catch(() => {});
+  getStats().then(stats => renderStats(document.getElementById('trust-stats'), stats)).catch(() => {});
+</script>
+</body>
+</html>
