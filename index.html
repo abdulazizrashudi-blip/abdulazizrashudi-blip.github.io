@@ -58,7 +58,7 @@
           <option value="yearly">سنوي</option>
         </select>
       </div>
-      <div class="field actions">
+      <div class="field"><label>الترتيب</label><select id="f-sort"><option value="newest">الأحدث</option><option value="price-asc">السعر: من الأقل</option><option value="price-desc">السعر: من الأعلى</option></select></div><div class="field actions">
         <button class="btn btn-primary btn-block" id="f-apply">بحث</button>
       </div>
     </div>
@@ -90,7 +90,7 @@
   const neighborhoodFilter = document.getElementById('f-neighborhood');
   const typeFilter = document.getElementById('f-type');
   const statusFilter = document.getElementById('f-status');
-  const periodFilter = document.getElementById('f-period');
+  const periodFilter = document.getElementById('f-period'); const sortFilter = document.getElementById('f-sort');
   const grid = document.getElementById('properties-grid');
   const resultsCount = document.getElementById('results-count');
   const statsEl = document.getElementById('trust-stats');
@@ -114,12 +114,12 @@
       (!status || p.status === status) &&
       (!period || (p.status === 'rent' && p.rentPeriod === period))
     );
-    renderProperties(grid, list, ownerMap);
+    if (sortFilter.value === 'price-asc') { list.sort((a, b) => (a.price || 0) - (b.price || 0)); } else if (sortFilter.value === 'price-desc') { list.sort((a, b) => (b.price || 0) - (a.price || 0)); } renderProperties(grid, list, ownerMap);
     resultsCount.textContent = `${list.length} عقار`;
   }
 
   document.getElementById('f-apply').addEventListener('click', applyFilters);
-  [cityFilter, neighborhoodFilter, typeFilter, statusFilter, periodFilter].forEach(el => el.addEventListener('change', applyFilters));
+  [cityFilter, neighborhoodFilter, typeFilter, statusFilter, periodFilter, sortFilter].forEach(el => el.addEventListener('change', applyFilters));
 
   async function init() {
     try {
