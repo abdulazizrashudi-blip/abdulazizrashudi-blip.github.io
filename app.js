@@ -92,7 +92,7 @@ function getFavorites() { try { return JSON.parse(localStorage.getItem('aqari_fa
                                                   </div>
                                                         </a>
                                                               <div class="p-body">
-                                                                      <a href="${url}" class="p-title-link"><div class="p-title">${p.title}</div></a>
+                                                                      <a href="${url}" class="p-title-link"><div class="p-title">${p.title}${p.verified ? ' <span class="verified-badge" title="عقار موثّق">✓ موثّق</span>' : ''}</div></a>
                                                                               <div class="p-loc">📍 ${p.city}${p.neighborhood ? ' · ' + p.neighborhood : ''} · ${p.type}</div>
                                                                                       <div class="p-meta">
                                                                                                 <span>📐 ${p.area} م²</span>
