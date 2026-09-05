@@ -90,7 +90,7 @@
         </div>
         <div class="detail-card">
           <span class="tag ${p.status === 'rent' ? 'rent' : 'sale'}" style="font-size:13px; padding:6px 14px; margin-bottom:10px; display:inline-block;">${statusLabel}</span>
-          <div class="detail-title">${p.title}</div>
+          <div class="detail-title">${p.title}${p.verified ? ' <span class="verified-badge-lg" title="عقار موثّق">✓ موثّق</span>' : ''}</div>
           <div class="detail-loc">📍 ${p.city}${p.neighborhood ? ' · ' + p.neighborhood : ''}</div>
           <div class="detail-price">${formatPrice(p.price)} <small>${priceUnit}</small></div>
           <div class="detail-meta-row">
