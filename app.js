@@ -75,7 +75,7 @@ function shareProperty(id, title) {
 }
 /* بطاقة عقار — تُستخدم بالصفحة الرئيسية ولوحات الإدارة/الملاك.
    owner تُمرَّر جاهزة ({name, phone}) لأن البيانات صارت من Firestore. */
-function propertyCardHTML(p, index, owner) {
+function getFavorites() { try { return JSON.parse(localStorage.getItem('aqari_favorites') || '[]'); } catch (e) { return []; } } function isFavorite(id) { return getFavorites().includes(id); } function toggleFavorite(id) { let favs = getFavorites(); if (favs.includes(id)) { favs = favs.filter(x => x !== id); } else { favs.push(id); } localStorage.setItem('aqari_favorites', JSON.stringify(favs)); return favs.includes(id); } function propertyCardHTML(p, index, owner) {
     const icon = TYPE_ICON[p.type] || '🏠';
     const statusLabel = p.status === 'rent' ? 'للإيجار' : 'للبيع';
     const badgeClass = p.status === 'rent' ? 'badge rent' : 'badge';
@@ -88,7 +88,7 @@ function propertyCardHTML(p, index, owner) {
               <a href="${url}" class="p-thumb-link">
                       <div class="p-thumb" style="background:${thumbStyle(index)}">
                                 <span>${icon}</span>
-                                          <span class="${badgeClass}">${statusLabel}</span>
+                                          <span class="${badgeClass}">${statusLabel}</span><button type="button" class="fav-btn ${isFavorite(p.id) ? 'active' : ''}" onclick="event.stopPropagation(); const on=toggleFavorite('${p.id}'); this.classList.toggle('active',on); this.textContent = on ? '♥' : '♡';">${isFavorite(p.id) ? '♥' : '♡'}</button>
                                                   </div>
                                                         </a>
                                                               <div class="p-body">
