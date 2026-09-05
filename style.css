@@ -186,7 +186,7 @@ button { font-family: inherit; cursor: pointer; }
   padding: 4px 10px;
   border-radius: 999px;
 }
-.p-thumb .badge.rent { background: #fff4dd; color: #8a6100; } .fav-btn { position: absolute; top: 8px; inset-inline-end: 8px; width: 30px; height: 30px; border-radius: 50%; border: none; background: rgba(255,255,255,0.92); color: #c0392b; font-size: 16px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 2; } .fav-btn.active { background: #c0392b; color: #fff; }
+.p-thumb .badge.rent { background: #fff4dd; color: #8a6100; } .fav-btn { position: absolute; top: 8px; inset-inline-end: 8px; width: 30px; height: 30px; border-radius: 50%; border: none; background: rgba(255,255,255,0.92); color: #c0392b; font-size: 16px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 2; } .fav-btn.active { background: #c0392b; color: #fff; } .verified-badge { display: inline-block; font-size: 11px; font-weight: 700; color: #0369a1; background: #e0f2fe; border: 1px solid #bae6fd; border-radius: 20px; padding: 2px 8px; margin-inline-start: 6px; vertical-align: middle; } .verified-badge-lg { display: inline-block; font-size: 13px; font-weight: 700; color: #0369a1; background: #e0f2fe; border: 1px solid #bae6fd; border-radius: 20px; padding: 4px 12px; margin-inline-start: 8px; vertical-align: middle; }
 .p-body { padding: 16px; }
 .p-title { font-weight: 700; font-size: 16px; margin-bottom: 4px; }
 .p-loc { color: var(--muted); font-size: 13px; margin-bottom: 10px; display: flex; align-items: center; gap: 4px; }
